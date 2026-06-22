@@ -81,8 +81,7 @@ Le bus n'est jamais coupé : il « passe » par chaque nœud (entrée 1 → entr
                 capteur (n)
 ```
 
-> Schémas de référence du dépôt : `Schma_systme.png` (vue d'ensemble) et `Zoom_Bornier_Wago.png` (détail d'un nœud). Pensez à les ajouter au dossier `docs/` du dépôt pour qu'ils s'affichent ici.
-
+> Schémas de référence du dépôt : ![Schéma du système](Schema%20systeme.png) (vue d'ensemble) et ![Détail bornier Wago](Schema%20Wago.png) (détail d'un nœud). 
 ---
 
 ## Chaîne d'alimentation & secours
