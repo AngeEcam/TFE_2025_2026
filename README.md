@@ -4,7 +4,7 @@
 > Ange Simpalingabo — Master en Sciences de l'Ingénieur Industriel, orientation électronique
 > Haute École ICHEC–ECAM–ISFSC · Année académique 2025–2026 · Service Biomédical de l'HMRA
  
-Ce dépôt est le **point d'entrée du projet**. Il raconte tout : des **idées de conception** jusqu'au **câblage**, et renvoie vers les dépôts de code de chaque brique du système.
+Ce dépôt est le point d'entrée du projet. Il raconte tout : des idées de conception jusqu'au câblage, et renvoie vers les dépôts de code de chaque brique du système.
  
 ---
  
@@ -23,12 +23,12 @@ Ce dépôt est le **point d'entrée du projet**. Il raconte tout : des **idées 
  
 ## Le projet en une page
  
-L'objectif : remplacer une solution commerciale fermée (JRI-MySirius) par une chaîne d'acquisition **maîtrisable en interne**, qui collecte en continu température, humidité et pression sur 5 points de mesure, **sans aucune perte de données** même en cas de coupure réseau ou électrique.
+L'objectif : remplacer une solution commerciale fermée (JRI-MySirius) par une chaîne d'acquisition maîtrisable en interne, qui collecte en continu température, humidité et pression sur 5 points de mesure, sans aucune perte de données même en cas de coupure réseau ou électrique.
  
-L'idée directrice est un **découplage entre acquisition et transmission** :
+L'idée directrice est un découplage entre acquisition et transmission :
  
-- l'**acquisition locale** est assurée par un module **Nordic nRF52** qui dialogue avec les capteurs sur un **bus RS-485 (Modbus RTU)** — immunité au bruit électromagnétique, fiabilité sur de longues distances ;
-- la **transmission** vers l'infrastructure hospitalière passe par une **passerelle ESP32** en **Ethernet**, reliée au nRF en **BLE** (ou UART), ce qui **isole la couche capteurs de la couche réseau**.
+- l'acquisition locale est assurée par un module Nordic nRF52 qui dialogue avec les capteurs sur un bus RS-485 (Modbus RTU) -> immunité au bruit électromagnétique, fiabilité sur de longues distances 
+- la transmission vers l'infrastructure hospitalière passe par une passerelle ESP32 en Ethernet, reliée au nRF en BLE (ou UART), ce qui isole la couche capteurs de la couche réseau.
 | | |
 |---|---|
 | **Points de mesure** | 5 capteurs max par local |
@@ -48,10 +48,10 @@ Le système est découpé en briques indépendantes, chacune dans son propre dé
  
 | Dépôt | Rôle | Techno |
 |---|---|---|
-| **[modbus-rs485-sensor-utils](https://github.com/AngeEcam/modbus-rs485-sensor-utils)** | Outils Python pour **tester et configurer** chaque capteur (scan, lecture, attribution du Slave ID) — **à utiliser en premier** | Python |
-| **[hmra-nrf52-firmware](https://github.com/AngeEcam/hmra-nrf52-firmware)** | Firmware d'**acquisition** : maître Modbus RTU, découverte auto des capteurs, tampon FIFO, transmission BLE | C / Zephyr |
-| **[hmra-esp32-gateway](https://github.com/AngeEcam/hmra-esp32-gateway)** | **Passerelle** : client BLE central, parsing JSON, relais HTTP vers le serveur via Ethernet | C++ / Arduino |
-| **[hmra-monitoring-server](https://github.com/AngeEcam/hmra-monitoring-server)** | **Backend** FastAPI + SQLite, authentification, seuils, alarmes email, **dashboard** temps réel | Python / HTML |
+| **[modbus-rs485-sensor-utils](https://github.com/AngeEcam/modbus-rs485-sensor-utils)** | Outils Python pour tester et configurer chaque capteur (scan, lecture, attribution du Slave ID) — **à utiliser en premier** | Python |
+| **[hmra-nrf52-firmware](https://github.com/AngeEcam/hmra-nrf52-firmware)** | Firmware d'acquisition : maître Modbus RTU, découverte auto des capteurs, tampon FIFO, transmission BLE | C / Zephyr |
+| **[hmra-esp32-gateway](https://github.com/AngeEcam/hmra-esp32-gateway)** | Passerelle : client BLE central, parsing JSON, relais HTTP vers le serveur via Ethernet | C++ / Arduino |
+| **[hmra-monitoring-server](https://github.com/AngeEcam/hmra-monitoring-server)** | Backend FastAPI + SQLite, authentification, seuils, alarmes email, dashboard temps réel | Python / HTML |
  
 ```
 modbus-rs485-sensor-utils   ──►  hmra-nrf52-firmware  ──BLE──►  hmra-esp32-gateway  ──HTTP──►  hmra-monitoring-server
@@ -62,13 +62,13 @@ modbus-rs485-sensor-utils   ──►  hmra-nrf52-firmware  ──BLE──►  
  
 ## Contexte & problématique
  
-Le Service Biomédical de l'HMRA surveille ses enceintes critiques (réfrigérateurs, congélateurs, incubateurs, fours) avec le système commercial **JRI-MySirius**. Trois limites motivent ce projet :
+Le Service Biomédical de l'HMRA surveille ses enceintes critiques (réfrigérateurs, congélateurs, incubateurs, fours) avec le système commercial JRI-MySirius. Trois limites motivent ce projet :
  
 - **Communication difficile avec le fournisseur** et faible réactivité sur les incidents ;
 - **Dépendance à une solution externe** : système fermé qui interdit toute intervention ou évolution par le service ;
 - **Instabilité du signal radio**, aggravée par la densification du bruit électromagnétique dans le bâtiment.
 > **Pourquoi du BLE alors que le reproche porte sur la radio ?**
-> Le problème de JRI n'est pas la radio en soi, mais le *réseau de radios* : JRI porte loin (≈ 1 km, sub-GHz, répéteurs) avec **une liaison RF par capteur**, à travers tout le bâtiment — sensible aux murs, obstacles et personnes. Ici, la réponse est **locale, par local** : un bus filaire mutualisé remonte tous les capteurs vers un module unique, et **un seul saut BLE court reste confiné à la pièce**.
+> Le problème de JRI n'est pas la radio en soi, mais le *réseau de radios* : JRI porte loin (≈ 1 km, sub-GHz, répéteurs) avec une liaison RF par capteur, à travers tout le bâtiment — sensible aux murs, obstacles et personnes. Ici, la réponse est locale, par local : un bus filaire mutualisé remonte tous les capteurs vers un module unique, et un seul saut BLE court reste confiné à la pièce.
  
 ---
  
@@ -123,13 +123,13 @@ Schéma matériel complet (câblage 4 fils, bornier Wago, alimentation) : **[doc
  
 ## Mise en œuvre — ordre de montage
  
-Suivre les étapes **dans l'ordre** : on prépare les capteurs, on câble, on flashe, puis on lance le serveur.
+Suivre les étapes dans l'ordre : on prépare les capteurs, on câble, on flashe, puis on lance le serveur.
  
 ### Étape 1 — Préparer chaque capteur individuellement
  
-Avant de connecter plusieurs capteurs sur le même bus, vérifier que chacun fonctionne seul, puis lui attribuer une **adresse Slave ID unique** (1–247) pour éviter les conflits.
+Avant de connecter plusieurs capteurs sur le même bus, vérifier que chacun fonctionne seul, puis lui attribuer une adresse Slave ID unique (1–247) pour éviter les conflits.
  
-➡️ Dépôt **[modbus-rs485-sensor-utils](https://github.com/AngeEcam/modbus-rs485-sensor-utils)** : scripts prêts à l'emploi par capteur (dossier `sensors/`).
+Dépôt **[modbus-rs485-sensor-utils](https://github.com/AngeEcam/modbus-rs485-sensor-utils)** : scripts prêts à l'emploi par capteur (dossier `sensors/`).
 Exemple : `set_slave_ID_sthp01a.py` pour adresser un S-THP-01A.
  
 > Adressage retenu dans ce projet : **S-THP-01A → 1**, **XY-MD04 → 2**, **module PT100 (PTA8C04) → 3**.
@@ -138,26 +138,26 @@ Exemple : `set_slave_ID_sthp01a.py` pour adresser un S-THP-01A.
  
 Raccorder les capteurs en **daisy-chain** sur le bus RS-485 4 fils (VCC / GND / A+ / B−) à l'aide de connecteurs Wago, et mettre en place la chaîne d'alimentation 230 V → mini-UPS → boost/buck.
  
-➡️ Procédure complète, schémas et nomenclature : **[docs/HARDWARE.md](docs/HARDWARE.md)**.
+Procédure complète, schémas et nomenclature : **[docs/HARDWARE.md](docs/HARDWARE.md)**.
  
 ### Étape 3 — Flasher le module d'acquisition (nRF52)
  
 Compiler et flasher le firmware Zephyr sur le nRF52 DK.
  
-➡️ Dépôt **[hmra-nrf52-firmware](https://github.com/AngeEcam/hmra-nrf52-firmware)** (`west build` / `west flash`).
+Dépôt **[hmra-nrf52-firmware](https://github.com/AngeEcam/hmra-nrf52-firmware)** (`west build` / `west flash`).
 Le firmware découvre seul les capteurs présents — aucune configuration supplémentaire.
  
 ### Étape 4 — Flasher la passerelle (ESP32)
  
 Renseigner l'URL du serveur dans le firmware, puis téléverser via l'Arduino IDE.
  
-➡️ Dépôt **[hmra-esp32-gateway](https://github.com/AngeEcam/hmra-esp32-gateway)** (dossier `esp32_gateway/`).
+Dépôt **[hmra-esp32-gateway](https://github.com/AngeEcam/hmra-esp32-gateway)** (dossier `esp32_gateway/`).
  
 ### Étape 5 — Lancer le serveur et ouvrir le dashboard
  
 Installer les dépendances, créer le fichier `.env`, démarrer le serveur.
  
-➡️ Dépôt **[hmra-monitoring-server](https://github.com/AngeEcam/hmra-monitoring-server)** :
+Dépôt **[hmra-monitoring-server](https://github.com/AngeEcam/hmra-monitoring-server)** :
 ```bash
 pip install -r requirements.txt
 # créer un .env avec au minimum SECRET_KEY
